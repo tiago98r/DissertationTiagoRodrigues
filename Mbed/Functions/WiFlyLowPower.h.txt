@@ -1,0 +1,11 @@
+#ifndef WIFLYLOWPOWER_H_
+#define WIFLYLOWPOWER_H_
+
+void sleep_wifly_UART(void);
+void wake_wifly_RESET(void);
+void connect_wifly(void);
+void get_ip(void);
+void reset_HIGH(void);
+void test_message(void);
+
+#endif

@@ -1,0 +1,3 @@
+Other libraries are missing to compile the program, they are not commited here, only for the reason that they are not of my authory.
+Even though, the libraries can be easily found in the Mbed repository.
+The header file names are 'PowerControl.h' and 'WiflyInterface.h'. and 'mbed.h'

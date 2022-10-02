@@ -1,0 +1,89 @@
+#include "WiFlyLowPower.h"
+#include "mbed.h"
+#include "WiflyInterface.h"
+
+
+DigitalOut reset(p22);
+Serial wifly(p13,p14);  // tx,rx
+Serial pc(USBTX,USBRX);
+WiflyInterface wifly_connect(p13,p14,p22,p21,"xerife","password12345",WPA);
+
+void test_message(void){
+    pc.printf("This is an arrival spot test!\n");
+    }
+
+void reset_HIGH(void){
+    reset=1;
+    }
+
+void connect_wifly(void){
+    
+    pc.printf("Trying to connect...\n");
+    wifly_connect.init();
+    while (!wifly_connect.connect());
+    pc.printf("Connected!\n");
+    
+    
+    }
+void get_ip(void){
+    
+    pc.printf("IP Address is %s\n\r", wifly_connect.getIPAddress());
+    }
+
+void wake_wifly_RESET(void){
+    wait(10);
+    reset=0;
+    pc.printf("\nRESET");
+    wait(5);
+    reset=1;
+    pc.printf("\nacorda");
+    //Por norma depois do reset ele liga-se de novo à rede
+    
+    
+    }
+void sleep_wifly_UART(void){
+    
+    //Start by exiting CMD
+    wait(10); // ter tempo para abrir ao putty
+    
+    wifly.putc(101);       // e       
+    wifly.putc(120);       // x   
+    wifly.putc(105);       // i    
+    wifly.putc(116);       // t   
+    wifly.putc(13);        // carriage return    
+   
+    pc.printf("CMD exited!\n");
+    wait(2);
+    
+    
+    
+    // Enter command mode
+    
+    wifly.putc(36);       // $       
+    wifly.putc(36);       // $   
+    wifly.putc(36);       // $   
+     
+     
+    pc.printf("CMD active!\n");
+    
+    wait(5);
+    
+  
+    
+    wifly.putc(115); //s
+    fflush(stdout);
+    wifly.putc(108);  //l
+    fflush(stdout);
+    wifly.putc(101);  //e
+    fflush(stdout);
+    wifly.putc(101);  //e
+    fflush(stdout);
+    wifly.putc(112);  //p
+    fflush(stdout);
+    wifly.putc(13);  // carriage return  
+    fflush(stdout);
+    
+    
+    pc.printf("WiFly asleep!\n");
+    
+    }

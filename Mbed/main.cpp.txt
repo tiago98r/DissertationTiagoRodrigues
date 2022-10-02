@@ -1,0 +1,74 @@
+#include"mbed.h"
+#include"WiFlyLowPower.h"
+#include "WiflyInterface.h"
+#include "PowerControl/PowerControl.h"
+#include "PowerControl/EthernetPowerControl.h"
+
+//https://os.mbed.com/users/no2chem/notebook/mbed-power-controlconsumption/ checkar este website para mais informações
+
+// WatchdogTimer
+class Watchdog
+{
+public:
+// Load timeout value in watchdog timer and enable
+    void kick(float s)
+    {
+        LPC_WDT->WDCLKSEL = 0x1;                // Set CLK src to PCLK
+        uint32_t clk = SystemCoreClock / 16;    // WD has a fixed /4 prescaler, PCLK default is /4
+        LPC_WDT->WDTC = s * (float)clk;
+        LPC_WDT->WDMOD = 0x3;                   // Enabled and Reset
+        kick();
+    }
+// "kick" or "feed" the dog - reset the watchdog timer
+// by writing this required bit pattern
+    void kick()
+    {
+        LPC_WDT->WDFEED = 0xAA;
+        LPC_WDT->WDFEED = 0x55;
+    }
+};
+
+// Setup the watchdog timer
+Watchdog wdt;
+// Port de ligação ao MATLAB
+TCPSocketConnection socket;
+const int ECHO_SERVER_PORT = 5204;
+
+
+
+
+
+int main(void)
+{
+
+    reset_HIGH(); // permite com que o WiFly não entre em RESET
+    connect_wifly();
+    get_ip();
+    
+     //Ligação c/ o socket
+    while (socket.connect("172.20.10.2", ECHO_SERVER_PORT) < 0); // O Ip que entra aqui é o do servidor/host
+    socket.set_blocking(false, 1500);
+    test_message();
+
+    // envia dados para PC
+
+    // entra em idle
+
+    // recebe dados de PC
+
+    while(1) {
+
+        // vai tudo dormir
+        
+        
+
+        sleep_wifly_UART(); // Sleep WiFly
+        PHY_PowerDown();   // Verificar se precisamos disto ligado (??) Por experiência parece-me que não
+        wdt.kick(10.0);  // dá um kick de Tch segs ao watchdog, quando o CPU entrar em sleep ele acorda-o passado Tch segs com um reset e volta ao início do main().
+        Sleep();
+        PowerDown();
+        DeepPowerDown();
+
+
+    }
+}
