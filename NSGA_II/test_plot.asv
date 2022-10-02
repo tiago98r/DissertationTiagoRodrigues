@@ -1,0 +1,14 @@
+clc
+clear all
+close all
+
+syms x
+f(x) = sin(x+exp(cos(sqrt(7)+x)))+1.73;
+
+
+
+fplot(f)
+hold on
+axis([0 6.5 -0 3.5]);
+grid on
+plot(0.554840444279398, 2.525, '.', 'MarkerSize', 15)
