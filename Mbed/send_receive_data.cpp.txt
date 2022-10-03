@@ -1,0 +1,77 @@
+#include "mbed.h"
+#include "WiflyInterface.h"
+
+
+AnalogIn res(p19);
+Serial pc(USBTX, USBRX);
+
+const int ECHO_SERVER_PORT = 5204;
+WiflyInterface wifly(p13,p14,p22,p21,"xerife","password12345",WPA);
+
+int main() {
+    
+    float aux=0;
+    
+    
+    wifly.init();
+    while (!wifly.connect());#include "mbed.h"
+#include "WiflyInterface.h"
+
+
+AnalogIn res(p19);
+Serial pc(USBTX, USBRX);
+
+const int ECHO_SERVER_PORT = 5204;
+WiflyInterface wifly(p13,p14,p22,p21,"xerife","password12345",WPA);
+
+int main() {
+    
+    float aux=0;
+    
+    
+    wifly.init();
+    while (!wifly.connect());
+    TCPSocketConnection socket;
+    pc.printf("IP Address is %s\n\r", wifly.getIPAddress());
+    
+    while (socket.connect("172.20.10.2", ECHO_SERVER_PORT) < 0); // O Ip que entra aqui é o do servidor/host
+    socket.set_blocking(false, 1500);
+    pc.printf("Socket sucessfully connected! \n\r");
+    
+    while(1){
+        
+        aux=res.read();
+        char str[20] ="";
+        //pc.printf("Res val: %f\n",aux);
+        
+        sprintf(str, "%f", aux); // Converter o valor aux numa variavel tipo string
+        int n=sizeof(str);
+        socket.send_all(str, n);
+        pc.printf("Res val: %s\n",str);
+        wait(1);            
+        
+        }
+    
+}
+    TCPSocketConnection socket;
+    pc.printf("IP Address is %s\n\r", wifly.getIPAddress());
+    
+    while (socket.connect("172.20.10.2", ECHO_SERVER_PORT) < 0); // O Ip que entra aqui é o do servidor/host
+    socket.set_blocking(false, 1500);
+    pc.printf("Socket sucessfully connected! \n\r");
+    
+    while(1){
+        
+        aux=res.read();
+        char str[20] ="";
+        //pc.printf("Res val: %f\n",aux);
+        
+        sprintf(str, "%f", aux); // Converter o valor aux numa variavel tipo string
+        int n=sizeof(str);
+        socket.send_all(str, n);
+        pc.printf("Res val: %s\n",str);
+        wait(1);            
+        
+        }
+    
+}
